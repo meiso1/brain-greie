@@ -4,7 +4,7 @@ import queue
 import streamlit as st # library to create a web application
 from openai import AzureOpenAI # library to communicate with GPT
 import azure.cognitiveservices.speech as speech # library to communicate with T2S and S2T
-
+import tempfile
 
 ### API KEYS AND VARIABLES (DON'T CHANGE)
 AZURE_API_KEY='e7db7cea20154aa695405820a8840be4'
@@ -23,17 +23,18 @@ gpt_client = AzureOpenAI(
 deployment_id = DEPLOYMENT_ID
 max_tokens_per_request = 200 # you can change this
 
+
 ### SETUP - SPEECH 2 TEXT AND SPEECH 2 TEXT
 speech_config = speech.SpeechConfig(subscription=SPEECH_API_KEY, region=SPEECH_REGION)
 audio_output_config = speech.audio.AudioOutputConfig(use_default_speaker=True)
 audio_input_config = speech.audio.AudioConfig(use_default_microphone=True)
 
-voice_languages = ['en-US', '', ''] # languages for user voice input and output. Add more if you want
+voice_languages = ['en-GB', ''] # languages for user voice input and output. Add more if you want
 speech_config.speech_recognition_language = voice_languages[0]
 speech_to_text = speech.SpeechRecognizer(speech_config=speech_config, audio_config=audio_input_config)
 
-voice_names = ['en-US-AndrewNeural' '', ''] # voice names for talking avatar output. Add more if you want
-moods = ['Chat', ''] # speak styles for talking avatar. See resources for supported voices 
+voice_names = ['en-GB-RyanNeural', ''] # voice names for talking avatar output. Add more if you want
+moods = ['Angry'] # speak styles for talking avatar. See resources for supported voices 
 speech_config.speech_synthesis_voice_name = voice_names[0] 
 text_to_speech = speech.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_output_config)
 
@@ -55,11 +56,12 @@ def gpt(prompt, messages=[]):
 def prompt_engineering(messages): 
     messages.append(
         {"role": "system", 
-         "content": "Answer in maximum 40 words."}
-        )
+         "content": "Answer the users questions as an angry chef that knows everything about what the user asks about in maximum 40 words."})
+   
+        
     # add as many as these as you want
 
-def text2speech(text, ssml = False):
+def text2speech(text, ssml = True):
     if ssml: # if custom speaking style or animation is used
         text = custom_speak(text, voice_languages[0], voice_names[0], moods[0])
         return text_to_speech.speak_ssml_async(ssml=text)
@@ -83,16 +85,18 @@ def custom_speak(text, language, voice_name, mood):
     return ssml_text
 
 
+
+
 ### WEB APPLICATION
 
 st.set_page_config(layout="wide")
 
 title_placeholder = st.empty()
-title_placeholder.title("Welcome to BRAIN x KPMG AI Workshop")
+title_placeholder.title("Øving med frist ikveld?")
 
 
 subtitle_placeholder = st.empty()
-subtitle_placeholder.write("You are running the code. Great start, now create your AI avatar!")
+subtitle_placeholder.write("Spør meg om øvinger du trenger hjelp til!")
 
 if "messages" not in st.session_state: # initialize chat history
     st.session_state.messages = []
@@ -118,7 +122,7 @@ with rightColumn:
             if message['role'] == 'user' or message['role'] == 'assistant':
                 with st.chat_message(message["role"], avatar=avatar):
                     st.markdown(message["content"])
-        prompt = chat_input_placeholder.chat_input('Ask me something')
+        prompt = chat_input_placeholder.chat_input('Let me cook')
         if voice_input_placeholder.button('Press here and speak a question'):
             prompt = "" # add speech2text here if you want
         if prompt:
@@ -129,12 +133,13 @@ with rightColumn:
                 message = st.empty()
                 message.markdown("...")
                 messages = st.session_state.messages
-                text = prompt # this just repeats what you input
+                text = gpt(prompt)
                 message.markdown(text)
                 if not ANIMATE:
-                    pass # add text to speech here and remove 'pass'
+                    text2speech(text)
             st.session_state.messages.append({"role": "assistant", "content": text})
 
             if ANIMATE:
                 pass # add animation and remove 'pass'
             
+
