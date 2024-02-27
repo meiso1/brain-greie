@@ -55,8 +55,9 @@ def gpt(prompt, messages=[]):
 def prompt_engineering(messages): 
     messages.append(
         {"role": "system", 
-         "content": "Answer in maximum 40 words."}
-        )
+         "content": "Answer the users questions as an angry chef that knows everything about what the user asks about in maximum 40 words."})
+   
+        
     # add as many as these as you want
 
 def text2speech(text, ssml = False):
@@ -88,11 +89,11 @@ def custom_speak(text, language, voice_name, mood):
 st.set_page_config(layout="wide")
 
 title_placeholder = st.empty()
-title_placeholder.title("Welcome to BRAIN x KPMG AI Workshop")
+title_placeholder.title("Øving med frist ikveld?")
 
 
 subtitle_placeholder = st.empty()
-subtitle_placeholder.write("You are running the code. Great start, now create your AI avatar!")
+subtitle_placeholder.write("Spør meg om øvinger du trenger hjelp til!")
 
 if "messages" not in st.session_state: # initialize chat history
     st.session_state.messages = []
@@ -118,7 +119,7 @@ with rightColumn:
             if message['role'] == 'user' or message['role'] == 'assistant':
                 with st.chat_message(message["role"], avatar=avatar):
                     st.markdown(message["content"])
-        prompt = chat_input_placeholder.chat_input('Ask me something')
+        prompt = chat_input_placeholder.chat_input('Let me cook')
         if voice_input_placeholder.button('Press here and speak a question'):
             prompt = "" # add speech2text here if you want
         if prompt:
@@ -129,7 +130,7 @@ with rightColumn:
                 message = st.empty()
                 message.markdown("...")
                 messages = st.session_state.messages
-                text = prompt # this just repeats what you input
+                text = gpt(prompt)
                 message.markdown(text)
                 if not ANIMATE:
                     pass # add text to speech here and remove 'pass'
