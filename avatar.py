@@ -56,7 +56,7 @@ def gpt(prompt, messages=[]):
 def prompt_engineering(messages): 
     messages.append(
         {"role": "system", 
-         "content": "Answer the users questions as an angry chef that knows everything about what the user asks about in maximum 40 words."})
+         "content": "Answer the users questions as the angry chef Gordon ramsay that knows everything about what the user asks about in maximum 40 words."})
    
         
     # add as many as these as you want
@@ -91,28 +91,29 @@ def custom_speak(text, language, voice_name, mood):
 
 st.set_page_config(layout="wide")
 
-title_placeholder = st.empty()
-title_placeholder.title("Øving med frist ikveld?")
-
-
-subtitle_placeholder = st.empty()
-subtitle_placeholder.write("Spør meg om øvinger du trenger hjelp til!")
 
 if "messages" not in st.session_state: # initialize chat history
     st.session_state.messages = []
+
 
 leftColumn, centerColumn, rightColumn = st.columns(3)
 
 with leftColumn:
     text_input_placeholder = st.empty()
     text_placeholder = st.empty()
+
     
 
 with centerColumn:
-    image_placeholder = st.empty()
-    image_placeholder.image("images/avatar.png")
-    chat_input_placeholder = st.empty()
-    voice_input_placeholder = st.empty()
+        title_placeholder = st.empty()
+        title_placeholder.title("Behov for kok?")
+        subtitle_placeholder = st.empty()
+        subtitle_placeholder.write("Spør meg om øvinger du trenger hjelp til!")
+        image_placeholder = st.empty()
+        image_placeholder.image("images/avatar.png")
+        chat_input_placeholder = st.empty()
+        voice_input_placeholder = st.empty()
+
 
 
 with rightColumn:
