@@ -106,7 +106,7 @@ with leftColumn:
 
 with centerColumn:
         title_placeholder = st.empty()
-        title_placeholder.title("Behov for kok?")
+        title_placeholder.title("Kjell's Kitchen")
         subtitle_placeholder = st.empty()
         subtitle_placeholder.write("Spør meg om øvinger du trenger hjelp til!")
         image_placeholder = st.empty()
